@@ -1,0 +1,166 @@
+<%@ Page Language="C#" Title="Contrato" AutoEventWireup="true" CodeBehind="cadastroContrato.aspx.cs" Inherits="gerDemandas.cadastroContrato" MasterPageFile="~/Site.Master" ValidateRequest="False" %>
+
+<asp:Content ContentPlaceHolderID="HeadContent" ID="header" runat="server">
+</asp:Content>
+<asp:Content ContentPlaceHolderID="MainContent" ID="conteudo" runat="server">
+    <div class="titulopagina">Cadastro de Contratos</div>    
+    <asp:Panel ID="pnlerros" runat="server" Visible="false" CssClass="textoErros"></asp:Panel>
+    <asp:Panel ID="pnlSucesso" runat="server" Visible="false" CssClass="textoSucesso">
+    <img src="imagens/ok.gif" alt="ok" id="Img1" align="middle" />Os dados foram salvos com sucesso!!
+    <asp:Panel ID="pnlNovosContratos" runat="server" Visible="false">
+    <br />              
+    </asp:Panel>
+        <br />
+    <center>
+        <asp:Button ID="btnVoltar" runat="server" Text="Voltar" CssClass="formulario" OnClientClick="javascript: location.href='buscaContrato.aspx'; return false;" UseSubmitBehavior="false"/>
+    </center>
+    </asp:Panel>   
+
+<table cellpadding="2" cellspacing="2" width="800" runat="server" id="tbldados">
+<tr>
+    <td class="tdlabelform">Cliente</td>
+    <td class="tdlabelform">Contrato</td>
+</tr>
+<tr>
+    <td class="tdcamposform">
+                <asp:DropDownList ID="dblCliente" runat="server" width="250px" CssClass="formulario" Height="20px" TabIndex="1">
+                </asp:DropDownList> 
+    </td>
+    <td class="tdcamposform">
+            <asp:TextBox ID="txtNomeContrato" runat="server" 
+                             CssClass="formulario" Width="250px" 
+                             MaxLength="100" TabIndex="2"></asp:TextBox>
+    </td>  
+
+</tr>
+<tr>
+    <td class="tdlabelform">Data Cadastro</td>
+    <td class="tdlabelform">Data Encerramento</td>
+</tr>
+<tr>
+    <td class="tdcamposform">
+            <asp:TextBox ID="txtDataCadastro" runat="server" 
+                             CssClass="formulario dateField" Width="250px" 
+                             MaxLength="100" TabIndex="3" TextMode="Date" 
+                ClientIDMode="Static" AutoPostBack="True"></asp:TextBox>
+
+    </td>
+    <td class="tdcamposform">
+            <asp:TextBox ID="txtDataEncerramento" runat="server" 
+                             CssClass="formulario" Width="250px" 
+                             MaxLength="100" TabIndex="4" TextMode="Date" 
+                ClientIDMode="Static"></asp:TextBox>
+    </td>
+
+</tr>
+    <tr>
+        <td colspan="2"><hr /></td>
+    </tr>
+<tr>
+    <td class="tdlabelform">Centro de Custo - Tipo de Servico</td>
+</tr>
+<tr>
+    <td class="tdcamposform">
+                <asp:DropDownList ID="dblCentroServico" runat="server" width="250px" CssClass="formulario" Height="20px" TabIndex="5">
+                </asp:DropDownList>
+                <asp:Button ID="btnAddCentroServico" runat="server" Text="+" CssClass="formularioBotao" TabIndex="6" onclick="btnAddCentroServico_Click"/>
+                <asp:HiddenField ID="txtCentroCustoDescricao" runat="server" />
+                <asp:HiddenField ID="hdnExcluirServicos" runat="server" Value="" ClientIDMode="Static" />
+                    <asp:Button ID="btnExcluirServicos" runat="server" ClientIDMode="Static" 
+                        onclick="btnExcluirServicos_Click"/>
+
+                <asp:HiddenField ID="hdnAddGridViewServicos" runat="server" Value="" ClientIDMode="Static" />
+                 <asp:HiddenField ID="hdnIdCentroServicoConsultado" runat="server" Value="" ClientIDMode="Static" />
+                <asp:Button ID="btnAddGridViewServicos" runat="server" ClientIDMode="Static" 
+                            onclick="btnAddGridViewServicos_Click"/>
+    
+    </td>
+</tr>
+<tr>
+    <td colspan="8">    
+    <asp:GridView ID="grdlista" runat="server" AutoGenerateColumns="False" 
+            CssClass="gridView" onrowdatabound="grdlista_RowDataBound" 
+            ShowFooter="True" GridLines="None" 
+                                EmptyDataText="Nenhum tipo de serviço encontrado" 
+            AllowPaging="True" PageSize="100" ShowHeader="true" ClientIDMode="Static" 
+            DataKeyNames="Id" onselectedindexchanged="grdlista_SelectedIndexChanged" 
+            onselectedindexchanging="grdlista_SelectedIndexChanging">
+        <Columns>            
+            <asp:TemplateField HeaderText="Centro de Custo - Tipo de Serviço">
+                 <HeaderStyle CssClass="headgrid" Width="250px"/>
+                 <ItemStyle CssClass="linhagrid" Width="250px"/>
+                 <ItemTemplate>
+                    <asp:TextBox ID="txtTipoServicosDescricao" runat="server" Width="250" BorderStyle="None" Text='<%#Eval("CentroServico.TipoServicos.Descricao")%>'></asp:TextBox>
+                </ItemTemplate>
+           </asp:TemplateField>
+          <asp:TemplateField>
+                <ItemTemplate>
+                     <asp:HiddenField ID="hdnCentroServicoId" runat="server" Value='<%#Eval("CentroServico.Id") %>'/>
+                     <asp:HiddenField ID="hdnContratoId" runat="server" Value='<%#Eval("Id_Con") %>'/>
+                </ItemTemplate>
+        </asp:TemplateField>
+               <asp:TemplateField>
+                 <ItemTemplate>
+                            <asp:Image ID="imgEdit" runat="server" ImageUrl="~/imagens/edit.gif" ToolTip="Editar"/>
+                            <asp:Image ID="ImgDel" runat="server" ImageUrl="~/imagens/del.gif" ToolTip="Delete"/>                                                                                                                
+                </ItemTemplate>    
+            </asp:TemplateField>
+      </Columns>
+    </asp:GridView>
+
+    <asp:GridView ID="grdservicos" runat="server" AutoGenerateColumns="False" CssClass="gridView" onrowdatabound="grdservicos_RowDataBound" ShowFooter="True" GridLines="None" 
+                                EmptyDataText="Nenhum serviço encontrado" AllowPaging="True" PageSize="100" ShowHeader="true" ClientIDMode="Static" DataKeyNames="Id">
+    <Columns>            
+        <asp:TemplateField HeaderText="Serviço">
+            <HeaderStyle CssClass="headgrid" Width="300px"/>
+                <ItemStyle CssClass="linhagrid" Width="300px"/>
+                    <ItemTemplate>
+                        <asp:TextBox ID="txtnom_serv_vinc" runat="server" Width="300" BorderStyle="None" Text='<%#Eval("nom_serv_vinc")%>'></asp:TextBox>
+                    </ItemTemplate>
+         </asp:TemplateField>
+           <asp:TemplateField>
+                <ItemTemplate>
+                    <asp:HiddenField ID="hdnServicoVinculadosId" runat="server" Value='<%#Eval("Id") %>'/>
+                    <asp:HiddenField ID="hdnTipoServicosId" runat="server" Value='<%#Eval("IdTipoServico") %>'/>
+               </ItemTemplate>
+          </asp:TemplateField>
+           <asp:TemplateField HeaderText="Valor">
+                 <HeaderStyle CssClass="headgrid" Width="100px"/>
+                 <ItemStyle CssClass="linhagrid" Width="100px"/>
+                 <ItemTemplate>
+                        <asp:TextBox ID="txtValorServico" runat="server" Width="100" BorderStyle="None" AutoPostBack = "true" ontextchanged = "txtValorServico_TextChanged" Text='<%#Eval("ValorServVincu")%>'></asp:TextBox>
+                 </ItemTemplate>
+           </asp:TemplateField>
+      </Columns>
+  </asp:GridView>
+</td>
+</tr>
+
+    <tr>
+        <td colspan="2"><hr /></td>
+    </tr>
+<tr>
+        <td class="tdlabelform">Status</td>
+</tr>
+<tr>
+        <td class="tdcamposform" colspan="2">
+            <asp:RadioButton ID="rdoNegociacao" runat="server" GroupName="status" 
+                Value="2" Text="Em Negociação" Checked="True" TabIndex="7" /> 
+
+            <asp:RadioButton ID="rdoAtivo" runat="server" GroupName="status" 
+                Value="1" Text="Ativo" TabIndex="8" />
+
+             <asp:RadioButton ID="rdoEncerrado" runat="server" GroupName="status" 
+                Value="0" Text="Encerrado" TabIndex="9" />
+        </td>
+</tr>
+<tr>
+    <td>
+         <div align="left">
+            <asp:Button ID="btnSalvar" runat="server" Text="Salvar" CssClass="formularioBotao" onclick="btnSalvar_Click" TabIndex="10"/>
+        </div>
+        </td>
+</tr>
+
+</table>
+</asp:Content>
